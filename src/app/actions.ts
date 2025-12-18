@@ -3,11 +3,12 @@
 import { db } from "@/db";
 import { chats, messages as messagesTable } from "@/db/schema";
 import { auth } from "@/config/authHandler";
+import { eq, desc } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { eq } from "drizzle-orm";
 
-//Create a New Chat ID
-export async function createChat(title: string) {
+// Create a New Chat ID
+// This is called when the user lands on the page or clicks "New Chat"
+export async function createChat(title: string = "New Conversation") {
   const session = await auth();
   if (!session?.user?.id) return null;
 
@@ -15,27 +16,14 @@ export async function createChat(title: string) {
     .insert(chats)
     .values({
       userId: session.user.id,
-      title: title || "New Conversation",
+      title: title,
     })
     .returning();
-
   revalidatePath("/");
   return newChat.id;
 }
 
-// Save a Message (for both User or AI)
-export async function saveMessage(chatId: string, role: "user" | "assistant", content: string) {
-  const session = await auth();
-  if (!session?.user?.id) return null;
-
-  await db.insert(messagesTable).values({
-    chatId: chatId,
-    role: role,
-    content: content,
-  });
-}
-
-//Get Chat Histories
+//Get All Chats (For Sidebar)
 export async function getChats() {
   const session = await auth();
   if (!session?.user?.id) return [];
@@ -44,5 +32,17 @@ export async function getChats() {
     .select()
     .from(chats)
     .where(eq(chats.userId, session.user.id))
-    .orderBy(chats.createdAt);
+    .orderBy(desc(chats.createdAt)); // Newest first
+}
+
+//Get Messages for a Specific Chat - use in showing history
+export async function getChatMessages(chatId: string) {
+  const session = await auth();
+  if (!session?.user?.id) return [];
+
+  return await db
+    .select()
+    .from(messagesTable)
+    .where(eq(messagesTable.chatId, chatId))
+    .orderBy(messagesTable.createdAt);
 }

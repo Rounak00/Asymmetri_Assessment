@@ -66,7 +66,7 @@ export const messages = pgTable("message", {
   chatId: uuid("chatId")
     .notNull()
     .references(() => chats.id, { onDelete: "cascade" }), // Links message to a chat
-  role: text("role", { enum: ["user", "assistant"] }).notNull(), // who sent it?
+  role: text("role", { enum: ["user", "assistant"] }).notNull(), // who sent it? as ENUM
   content: text("content").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
