@@ -1,16 +1,14 @@
 import { z } from "zod";
+import { tool } from "ai";
 
-// Weather Tool
-export const weatherTool = {
+//weather tool
+export const weatherTool = tool({
   description: "Get the current weather for a specific location",
   parameters: z.object({
     location: z.string().describe("The city and state, e.g. San Francisco, CA"),
   }),
   execute: async ({ location }: { location: string }) => {
-    // Mock Data for the assessment (Real API calls can go here)
-    // We simulate a network delay
     await new Promise((resolve) => setTimeout(resolve, 500));
-    
     return {
       location,
       temperature: 72,
@@ -18,10 +16,10 @@ export const weatherTool = {
       humidity: 45,
     };
   },
-};
+}as any);
 
-// Stock Pricings
-export const stockTool = {
+//Stock Tool
+export const stockTool = tool({
   description: "Get the current stock price for a symbol",
   parameters: z.object({
     symbol: z.string().describe("The stock symbol, e.g. AAPL, GOOGL"),
@@ -34,12 +32,12 @@ export const stockTool = {
       change: "+1.2%",
     };
   },
-};
+}as any);
 
-// F1 Matches
-export const f1Tool = {
+//F1 race tool
+export const f1Tool = tool({
   description: "Get the next upcoming Formula 1 race",
-  parameters: z.object({}),
+  parameters: z.object({}), 
   execute: async () => {
     await new Promise((resolve) => setTimeout(resolve, 500));
     return {
@@ -49,4 +47,4 @@ export const f1Tool = {
       time: "14:00 GMT",
     };
   },
-};
+}as any);
