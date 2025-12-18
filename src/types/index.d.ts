@@ -1,6 +1,14 @@
 import { Message } from "ai";
 
-// The shape of a Chat Session (from Database)
+// Define custom Message manually to avoid SDK version conflicts
+export interface CMessage {
+  id: string;
+  role: "user" | "assistant" | "system" | "data" | "tool"; 
+  content: string;
+  toolInvocations?: any[];
+}
+
+// The shape of a Chat Session (from Database as DTO can say)
 export interface ChatSession {
   id: string;
   title: string;
