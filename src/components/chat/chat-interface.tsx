@@ -8,7 +8,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Send, LogOut, Bot, User, Plus, MessageSquare } from "lucide-react";
 import { signOut } from "next-auth/react"; 
 import { useRouter } from "next/navigation";
-import { ChatInterfaceProps } from "@/types";
+import { ChatInterfaceProps, CMessage, ToolInvocation } from "@/types"; 
 
 export default function ChatInterface({ 
   userName, 
@@ -18,23 +18,26 @@ export default function ChatInterface({
 }: ChatInterfaceProps) {
   const router = useRouter();
 
-  // Vercel AI SDK Hook
-  const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat({
+  // Get raw messages from SDK
+  const { messages: rawMessages, input, handleInputChange, handleSubmit, isLoading } = useChat({
     api: "/api/chat",
     body: {
       chatId: initialChatId
     },
-    initialMessages: initialMessages, // Load existing messages if we are opening an old chat
-   
-    onFinish: () => {  // When the first message finishes, refresh to update the sidebar title
+    initialMessages: initialMessages as any,
+    onFinish: () => {
       router.refresh(); 
     }
-  }) as any;
+  });
+
+  // FORCE TYPE: Cast SDK messages to our CMessage type
+  // This fixes "Property 'content' does not exist" and "toolInvocations missing"
+  const messages = rawMessages as unknown as CMessage[];
 
   return (
     <div className="flex h-screen bg-gray-50 overflow-hidden">
       
-      {/* sidebar */}
+      {/* Sidebar */}
       <div className="w-64 bg-white border-r hidden md:flex flex-col p-4 justify-between">
         <div>
           <h1 className="font-bold text-xl mb-6 flex items-center gap-2">
@@ -42,7 +45,6 @@ export default function ChatInterface({
             Asymmetri AI
           </h1>
           
-          {/* new chat button */}
           <Button 
             variant="outline" 
             className="w-full mb-4 justify-start gap-2 border-dashed"
@@ -51,7 +53,6 @@ export default function ChatInterface({
             <Plus className="h-4 w-4" /> New Chat
           </Button>
 
-          {/*history side bar */}
           <div className="space-y-1">
              <p className="text-xs font-semibold text-gray-400 mb-2 uppercase tracking-wider">Recent Chats</p>
              <ScrollArea className="h-[300px]">
@@ -83,7 +84,6 @@ export default function ChatInterface({
       {/*main chat area */}
       <div className="flex-1 flex flex-col max-w-5xl mx-auto w-full bg-white shadow-xl h-full">
         
-        {/* Messages list */}
         <ScrollArea className="flex-1 p-4">
           <div className="flex flex-col gap-6 pb-4">
             {messages.length === 0 && (
@@ -92,7 +92,7 @@ export default function ChatInterface({
               </div>
             )}
 
-            {messages.map((m: any) => (
+            {messages.map((m) => (
               <div key={m.id} className={`flex gap-3 ${m.role === "user" ? "justify-end" : "justify-start"}`}>
                 
                 {m.role === "assistant" && (
@@ -107,10 +107,14 @@ export default function ChatInterface({
                     : "bg-gray-100 text-black rounded-tl-none"
                   }`}
                 >
+
                   <div className="text-sm leading-relaxed whitespace-pre-wrap">{m.content}</div>
 
-                  {m.toolInvocations?.map((toolInvocation: any) => {
+                  {/*Tool cards */}
+                  {m.toolInvocations?.map((invocation: any) => {
+                    const toolInvocation = invocation as ToolInvocation;  // Safe Cast to our Interface
                     const toolCallId = toolInvocation.toolCallId;
+
                     if ('result' in toolInvocation) {
                       if (toolInvocation.toolName === 'getWeather') 
                          return <WeatherCard key={toolCallId} data={toolInvocation.result} />;
@@ -137,7 +141,6 @@ export default function ChatInterface({
           </div>
         </ScrollArea>
 
-        {/* Input : type the message to send */}
         <div className="p-4 border-t bg-white">
           <form onSubmit={handleSubmit} className="flex gap-3">
             <Input value={input} onChange={handleInputChange} placeholder="Type your message..." className="flex-1" />

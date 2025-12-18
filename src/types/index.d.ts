@@ -21,7 +21,7 @@ export interface ChatInterfaceProps {
   userName: string;
   initialChatId: string;
   history: ChatSession[];
-  initialMessages?: Message[];
+  initialMessages?: CMessage[];
 }
 
 //tool Data Types (For the Cards)
@@ -43,4 +43,12 @@ export interface F1Data {
   circuit: string;
   date: string;
   time: string;
+}
+
+// Define the shape of a Tool Invocation for strict typing -> in chat-interface.tsx
+export interface ToolInvocation {
+  toolCallId: string;
+  toolName: string;
+  args: any;
+  result?: any;
 }
