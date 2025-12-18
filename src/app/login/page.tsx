@@ -42,7 +42,7 @@ export default async function LoginPage() {
             </Button>
           </form>
 
-          {/* Google  button */}
+          {/* Google button */}
           <form
             action={async () => {
               "use server";
@@ -54,7 +54,6 @@ export default async function LoginPage() {
               Sign in with Google
             </Button>
           </form>
-
         </CardContent>
       </Card>
     </div>
