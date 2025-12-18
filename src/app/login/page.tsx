@@ -8,9 +8,11 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { redirect } from "next/navigation";
+import { FaGithub } from "react-icons/fa";
+import { FcGoogle } from "react-icons/fc";
 
 export default async function LoginPage() {
-  // check the sesssion here
+  // check the sesssion first
   const session = await auth();
   if (session?.user) {
     redirect("/");
@@ -35,11 +37,12 @@ export default async function LoginPage() {
             }}
           >
             <Button className="w-full" variant="outline" type="submit">
+              <FaGithub className="h-5 w-5" />
               Sign in with GitHub
             </Button>
           </form>
 
-          {/* Google login button */}
+          {/* Google  button */}
           <form
             action={async () => {
               "use server";
@@ -47,6 +50,7 @@ export default async function LoginPage() {
             }}
           >
             <Button className="w-full" variant="outline" type="submit">
+              <FcGoogle className="h-5 w-5" />
               Sign in with Google
             </Button>
           </form>

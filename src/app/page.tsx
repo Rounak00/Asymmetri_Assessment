@@ -2,6 +2,7 @@ import { auth, signOut } from "@/config/authHandler";
 import { Button } from "@/components/ui/button";
 import { redirect } from "next/navigation";
 
+
 export default async function Home() {
   // session check from db
   const session = await auth();
