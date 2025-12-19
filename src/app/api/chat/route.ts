@@ -195,7 +195,6 @@ export async function POST(req: Request) {
           const allInvocations: any[] = [];
 
           for (const step of steps) {
-            // We specifically look for toolResults
             if (step.toolResults && step.toolResults.length > 0) {
               for (const toolResult of step.toolResults) {
                 allInvocations.push({
@@ -234,15 +233,11 @@ export async function POST(req: Request) {
       },
     });
 
-    // after 'npm install ai@latest', this function will definitely exist
+  
     return result.toDataStreamResponse();
     
   } catch (error) {
     console.error("Chat API error:", error);
     return new Response(JSON.stringify({ error: "Server Error" }), { status: 500 });
   }
-}
-
-export async function GET() {
-  return new Response(JSON.stringify({ status: "OK" }));
 }
