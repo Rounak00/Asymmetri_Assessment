@@ -41,7 +41,7 @@ During the development, I implemented three distinct tools for the AI agent:
     </td>
     <td align="center">
         <b>Empty chat Interface</b><br/>
-        <img src="./ScreenShots/Screenshot 2025-12-19 202414.png" alt="Empty Chat Interface" width="100%" />
+        <img src="./ScreenShots/Screenshot 2025-12-19 225637.png" alt="Empty Chat Interface" width="100%" />
     </td>
   </tr>
 </table>
