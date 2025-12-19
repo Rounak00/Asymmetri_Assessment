@@ -26,19 +26,22 @@ export default async function Home({ searchParams }: PageProps) {
     if (newId) {
       redirect(`/?id=${newId}`);
     }
-    // If createChat failed, show empty state
     return <div>Error creating chat. Please try again.</div>;
   }
 
   // Case B: User has an ID -> Load the message history for that chat
   const dbMessages = await getChatMessages(currentChatId);
+  
+  // --- UPDATED MAPPING LOGIC ---
   chatMessages = dbMessages.map((m) => ({
     id: m.id,
     role: m.role as "user" | "assistant",
-    content: m.content,
+    content: m.content || "", // Handle null content safely
+    // Pass the saved tool data to the frontend so cards persist on refresh
+    toolInvocations: (m.toolInvocations as any) || undefined, 
   }));
 
-  // Fetch Sidebar History (List of all chats)
+  // Fetch Sidebar History
   const history = await getChats();
 
   return (
