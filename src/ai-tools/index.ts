@@ -11,8 +11,7 @@ export const weatherTool = tool({
     const apiKey = process.env.OPENWEATHER_API_KEY;
     try {
       const response = await fetch(
-        // `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${apiKey}&units=imperial`
-        `https://api.openf1.org/v1/sessions?country_name=Belgium&session_name=Sprint&year=2025`
+        `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${apiKey}&units=imperial`
       );
       if (!response.ok) throw new Error("Failed");
       const data = await response.json();
@@ -65,7 +64,8 @@ export const f1Tool = tool({
     try {
       //fetch Races - Including Circuit details
       const response = await fetch(
-        `https://api.sportmonk.com/v3/f1/races?api_token=${apiKey}&include=circuit`,
+        // `https://api.sportmonk.com/v3/f1/races?api_token=${apiKey}&include=circuit`,
+        `https://api.openf1.org/v1/sessions?country_name=Belgium&session_name=Sprint&year=2025`,
         { next: { revalidate: 3600 } } // cache for 1 hour
       );
 
