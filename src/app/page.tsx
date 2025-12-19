@@ -2,21 +2,17 @@ import { auth } from "@/config/authHandler";
 import { redirect } from "next/navigation";
 import ChatInterface from "@/components/chat/chat-interface";
 import { createChat, getChats, getChatMessages } from "@/app/actions";
-import { CMessage } from "@/types";
+import { CMessage, PageProps } from "@/types";
 
-interface PageProps {
-  searchParams: Promise<{ id?: string }>;
-}
+
 
 export default async function Home({ searchParams }: PageProps) {
-  // Authentication check
-  const session = await auth();
+  const session = await auth(); // authentication check
   if (!session?.user) {
     redirect("/login");
   }
 
-  // Await searchParams (required in Next.js 14+)
-  const params = await searchParams;
+  const params = await searchParams; // await searchParams to get the conversation ID
   let currentChatId = params.id;
   let chatMessages: CMessage[] = [];
 
@@ -32,17 +28,17 @@ export default async function Home({ searchParams }: PageProps) {
   // Case B: User has an ID -> Load the message history for that chat
   const dbMessages = await getChatMessages(currentChatId);
   
-  // --- UPDATED MAPPING LOGIC ---
+  // UPDATED MAPPING LOGIC
+
   chatMessages = dbMessages.map((m) => ({
     id: m.id,
     role: m.role as "user" | "assistant",
     content: m.content || "", // Handle null content safely
-    // Pass the saved tool data to the frontend so cards persist on refresh
+    //pass the saved tool data to the frontend so cards persist on refresh
     toolInvocations: (m.toolInvocations as any) || undefined, 
   }));
 
-  // Fetch Sidebar History
-  const history = await getChats();
+  const history = await getChats(); // Fetch Sidebar History
 
   return (
     <ChatInterface

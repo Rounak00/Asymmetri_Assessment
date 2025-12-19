@@ -4,40 +4,41 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CloudSun, TrendingUp, Trophy } from "lucide-react";
 import { WeatherData, StockData, F1Data } from "@/types";
 
-// Weather Card - NOW HIDES ITSELF IF UNKNOWN
-export function WeatherCard({ data }: { data: WeatherData  }) {
-  // If location is unknown, don't render anything
-  if (data?.condition === "Unknown Location") return null;
+// Weather Card
+export function WeatherCard({ data }: { data: WeatherData }) {
+  if (!data || data.condition === "Unknown Location") return null;
 
   return (
     <Card className="w-64 bg-blue-50 border-blue-200 mt-2">
       <CardHeader className="pb-2">
         <CardTitle className="text-sm font-medium flex items-center gap-2 text-blue-700">
-          <CloudSun className="h-4 w-4" /> Weather in {data?.location}
+          <CloudSun className="h-4 w-4" /> Weather in {data.location}
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold">{data?.temperature}°F</div>
-        <div className="text-sm text-gray-500">{data?.condition} • Humidity: {data?.humidity}%</div>
+        <div className="text-2xl font-bold">{data.temperature}°F</div>
+        <div className="text-sm text-gray-500">
+          {data.condition} • Humidity: {data.humidity}%
+        </div>
       </CardContent>
     </Card>
   );
 }
-// Stock Card - NOW HIDES ITSELF IF 0
-export function StockCard({ data }: { data: StockData  }) {
-  // If price is 0 (Rate Limit or Invalid), don't render anything
-  if (!data?.price || data.price === 0) return null;
+
+// Stock Card
+export function StockCard({ data }: { data: StockData }) {
+  if (!data || !data.price || data?.price === 0) return null;
 
   return (
     <Card className="w-64 bg-green-50 border-green-200 mt-2">
       <CardHeader className="pb-2">
         <CardTitle className="text-sm font-medium flex items-center gap-2 text-green-700">
-          <TrendingUp className="h-4 w-4" /> {data?.symbol} Stock
+          <TrendingUp className="h-4 w-4" /> {data.symbol} Stock
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold">${data?.price}</div>
-        <div className="text-sm text-green-600 font-medium">{data?.change} Today</div>
+        <div className="text-2xl font-bold">${data.price}</div>
+        <div className="text-sm text-green-600 font-medium">{data.change} Today</div>
       </CardContent>
     </Card>
   );
@@ -45,19 +46,25 @@ export function StockCard({ data }: { data: StockData  }) {
 
 // F1 Card
 export function F1Card({ data }: { data: F1Data }) {
-  if (data?.raceName === "Unknown Race") return null;
+  if (!data || data.raceName === "Unknown Race" || data.raceName === "API Error") return null;
+
+  const isSeasonEnd = data.raceName === "Season Finished";
 
   return (
     <Card className="w-64 bg-red-50 border-red-200 mt-2">
       <CardHeader className="pb-2">
         <CardTitle className="text-sm font-medium flex items-center gap-2 text-red-700">
-          <Trophy className="h-4 w-4" /> Next Race
+          <Trophy className="h-4 w-4" /> {isSeasonEnd ? "F1 Status" : "Next Race"}
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="font-bold">{data?.raceName}</div>
-        <div className="text-sm text-gray-600">{data?.circuit}</div>
-        <div className="text-xs text-gray-400 mt-1">{data?.date} @ {data?.time}</div>
+        <div className="font-bold">{data.raceName}</div>
+        <div className="text-sm text-gray-600">{data.circuit}</div>
+        {!isSeasonEnd && (
+          <div className="text-xs text-gray-400 mt-1">
+            {data.date} @ {data.time}
+          </div>
+        )}
       </CardContent>
     </Card>
   );

@@ -55,7 +55,7 @@ export async function POST(req: Request) {
         if (steps && steps.length > 0) {
           const allTools = [];
 
-          // 1. Gather ALL tools
+          //register  aLL tools
           for (const step of steps) {
             if (step.toolResults) {
               for (const toolResult of step.toolResults) {
@@ -69,28 +69,23 @@ export async function POST(req: Request) {
             }
           }
 
-          // 2. AGGRESSIVE FILTERING (The Fix)
-          // We remove any card that looks like a failure, so it never hits the DB
+          // aggressievly filtering - We remove any card that looks like a failure so it never hits the DB
           finalToolInvocations = allTools.filter((item) => {
              const res = item.result;
              if (!res) return false;
 
-             // DELETE "Unknown Location" weather cards
-             if (item.toolName === 'getWeather' && res.condition === 'Unknown Location') {
+             // DELETE "Unknown Location" weather cards or cards that  are invalid data get from api
+             if (item?.toolName === 'getWeather' && 'condition' in res && res.condition === 'Unknown Location') {
                 return false; 
              }
-             
-             // DELETE "0 Price" stock cards
-             if (item.toolName === 'getStockPrice' && (res.price === 0 || res.price === "0")) {
+             if (item?.toolName === 'getStockPrice' && 'price' in res && (res.price === 0 || res.price === "0")) {
+                return false;
+             }
+             if (item?.toolName === 'getF1Matches' && 'raceName' in res && res.raceName === 'Unknown Race') {
                 return false;
              }
 
-             // DELETE "Unknown Race" F1 cards
-             if (item.toolName === 'getF1Matches' && res.raceName === 'Unknown Race') {
-                return false;
-             }
-
-             return true; // Only keep the Good cards
+             return true;
           });
         }
 
@@ -106,7 +101,7 @@ export async function POST(req: Request) {
               toolInvocations: finalToolInvocations,
             });
           } catch (err) {
-            console.error("❌ Database Insert Failed:", err);
+            console.error("Database Insert Failed:", err);
           }
         }
       },
@@ -118,8 +113,4 @@ export async function POST(req: Request) {
     console.error("Chat API error:", error);
     return new Response(JSON.stringify({ error: "Server Error" }), { status: 500 });
   }
-}
-
-export async function GET() {
-  return new Response(JSON.stringify({ status: "OK" }));
 }

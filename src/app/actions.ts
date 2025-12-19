@@ -6,7 +6,7 @@ import { auth } from "@/config/authHandler";
 import { eq, desc, and } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
-// Create a New Chat ID
+//create new chat ID
 export async function createChat(title: string = "New Conversation") {
   const session = await auth();
   if (!session?.user?.id) return null;
@@ -28,7 +28,7 @@ export async function createChat(title: string = "New Conversation") {
   }
 }
 
-// Update Chat Title
+//updatee chat itle
 export async function updateChatTitle(chatId: string, title: string) {
   const session = await auth();
   if (!session?.user?.id) return false;
@@ -52,7 +52,7 @@ export async function updateChatTitle(chatId: string, title: string) {
   }
 }
 
-// Get All Chats (For Sidebar)
+//fetch all convorsations for sidebars
 export async function getChats() {
   const session = await auth();
   if (!session?.user?.id) return [];
@@ -69,14 +69,13 @@ export async function getChats() {
   }
 }
 
-// Get Messages for a Specific Chat
+// Get Messages for a Specific conversation
 export async function getChatMessages(chatId: string) {
   const session = await auth();
   if (!session?.user?.id) return [];
 
   try {
-    // First verify this chat belongs to the user
-    const chat = await db
+    const chat = await db  // First verify this chat belongs to the user
       .select()
       .from(chats)
       .where(

@@ -1,6 +1,11 @@
 import { Message } from "ai";
 
-// Define custom Message manually to avoid SDK version conflicts
+// for APP main page
+interface PageProps {
+  searchParams: Promise<{ id?: string }>;
+}
+
+//define custom Message manually to avoid SDK version conflicts
 export interface CMessage {
   id: string;
   role: "user" | "assistant" | "system" | "data" | "tool";
@@ -25,7 +30,7 @@ export interface ChatInterfaceProps {
   initialMessages?: CMessage[];
 }
 
-// Tool Data Types (For the Cards)
+// tool data types (For the Cards)
 export interface WeatherData {
   location: string;
   temperature: number;
@@ -46,7 +51,7 @@ export interface F1Data {
   time: string;
 }
 
-// Define the shape of a Tool Invocation
+// define the shape of a tool Invocation
 export interface ToolInvocation {
   toolCallId: string;
   toolName: string;

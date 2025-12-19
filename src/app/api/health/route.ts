@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { db } from "@/db";
 import { sql } from "drizzle-orm";
 
-export async function GET() {
+export async function GET() { // for check the health of API and DB Connections status
   try {
 
     const start = Date.now();
