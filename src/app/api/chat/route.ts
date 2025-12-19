@@ -100,7 +100,7 @@ export const dynamic = "force-dynamic";
 
 export async function POST(req: Request) {
   try {
-    // Authenticate the request
+    // 1. Authenticate the request
     const session = await auth();
     if (!session?.user?.id) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
@@ -109,7 +109,7 @@ export async function POST(req: Request) {
       });
     }
 
-    // Get messages and chatId from the frontend
+    // 2. Get messages and chatId from the frontend
     const body = await req.json();
     const { messages, chatId } = body;
 
@@ -120,7 +120,7 @@ export async function POST(req: Request) {
       });
     }
 
-    // Verify the chat belongs to this user
+    // 3. Verify the chat belongs to this user
     const chat = await db
       .select()
       .from(chats)
@@ -134,10 +134,10 @@ export async function POST(req: Request) {
       });
     }
 
-    // Get the last message - The one the user just sent
+    // 4. Get the last message - The one the user just sent
     const lastUserMessage = messages[messages.length - 1];
 
-    // Save user message to DB immediately
+    // 5. Save user message to DB immediately
     if (lastUserMessage && lastUserMessage.role === "user") {
       await db.insert(messagesTable).values({
         chatId,
@@ -146,9 +146,10 @@ export async function POST(req: Request) {
       });
     }
 
-    // Start the AI Stream
+    // 6. Start the AI Stream
     const result = streamText({
-      model: google("gemini-1.5-flash"),
+      // FIX 1: Use 'gemini-1.5-flash-latest' to avoid version 404 errors
+      model: google("gemini-1.5-flash-latest"), 
       messages: messages,
       tools: {
         getWeather: weatherTool,
@@ -156,14 +157,20 @@ export async function POST(req: Request) {
         getF1Matches: f1Tool,
       },
       maxSteps: 5,
-      onFinish: async ({ text }) => {
-        // Save AI Response
-        if (text && text.trim()) {
+      // FIX 2: Capture toolCalls in onFinish to save them to DB
+      onFinish: async ({ text, toolCalls }) => {
+        // Check if we have text OR if we have tool calls
+        const hasContent = text && text.trim().length > 0;
+        const hasTools = toolCalls && toolCalls.length > 0;
+
+        if (hasContent || hasTools) {
           try {
             await db.insert(messagesTable).values({
               chatId,
               role: "assistant",
-              content: text,
+              content: text || "", // Ensure content is never null
+              // Save the tool calls as JSON (drizzle handles the jsonb conversion)
+              toolInvocations: hasTools ? toolCalls : null, 
             });
           } catch (error) {
             console.error("Error saving assistant message:", error);

@@ -68,7 +68,7 @@ export const messages = pgTable("message", {
   chatId: uuid("chatId")
     .notNull()
     .references(() => chats.id, { onDelete: "cascade" }),
-  role: text("role", { enum: ["user", "assistant", "system", "data"] }).notNull(),
+  role: text("role", { enum: ["user", "assistant", "system", "data", "tool"] }).notNull(),
   content: text("content"),
   toolInvocations: jsonb("tool_invocations"), 
   createdAt: timestamp("created_at").defaultNow().notNull(),
