@@ -4,8 +4,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CloudSun, TrendingUp, Trophy } from "lucide-react";
 import { WeatherData, StockData, F1Data } from "@/types";
 
-//Weather Card
+// Weather Card - NOW HIDES ITSELF IF UNKNOWN
 export function WeatherCard({ data }: { data: WeatherData  }) {
+  // If location is unknown, don't render anything
+  if (data?.condition === "Unknown Location") return null;
+
   return (
     <Card className="w-64 bg-blue-50 border-blue-200 mt-2">
       <CardHeader className="pb-2">
@@ -20,9 +23,11 @@ export function WeatherCard({ data }: { data: WeatherData  }) {
     </Card>
   );
 }
-
-//Stock Card
+// Stock Card - NOW HIDES ITSELF IF 0
 export function StockCard({ data }: { data: StockData  }) {
+  // If price is 0 (Rate Limit or Invalid), don't render anything
+  if (!data?.price || data.price === 0) return null;
+
   return (
     <Card className="w-64 bg-green-50 border-green-200 mt-2">
       <CardHeader className="pb-2">
@@ -38,8 +43,10 @@ export function StockCard({ data }: { data: StockData  }) {
   );
 }
 
-//F1 Card
+// F1 Card
 export function F1Card({ data }: { data: F1Data }) {
+  if (data?.raceName === "Unknown Race") return null;
+
   return (
     <Card className="w-64 bg-red-50 border-red-200 mt-2">
       <CardHeader className="pb-2">
