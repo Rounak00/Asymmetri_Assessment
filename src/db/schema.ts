@@ -5,6 +5,7 @@ import {
   uuid,
   primaryKey,
   integer,
+  jsonb,
 } from "drizzle-orm/pg-core";
 import { type AdapterAccount } from "next-auth/adapters";
 
@@ -61,12 +62,14 @@ export const chats = pgTable("chat", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+
 export const messages = pgTable("message", {
   id: uuid("id").defaultRandom().primaryKey(),
   chatId: uuid("chatId")
     .notNull()
-    .references(() => chats.id, { onDelete: "cascade" }), // Links message to a chat
-  role: text("role", { enum: ["user", "assistant"] }).notNull(), // who sent it? as ENUM
-  content: text("content").notNull(),
+    .references(() => chats.id, { onDelete: "cascade" }),
+  role: text("role", { enum: ["user", "assistant", "system", "data"] }).notNull(),
+  content: text("content"),
+  toolInvocations: jsonb("tool_invocations"), 
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
