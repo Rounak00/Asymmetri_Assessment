@@ -52,8 +52,7 @@ export default function ChatInterface({
     updateTitle();
   }, [messages, hasUpdatedTitle, initialChatId, router]);
 
-  // auto-scroll to bottom
-  useEffect(() => {
+  useEffect(() => { // auto-scroll to bottom
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 

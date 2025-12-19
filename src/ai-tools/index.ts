@@ -11,7 +11,8 @@ export const weatherTool = tool({
     const apiKey = process.env.OPENWEATHER_API_KEY;
     try {
       const response = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${apiKey}&units=imperial`
+        // `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${apiKey}&units=imperial`
+        `https://api.openf1.org/v1/sessions?country_name=Belgium&session_name=Sprint&year=2025`
       );
       if (!response.ok) throw new Error("Failed");
       const data = await response.json();
