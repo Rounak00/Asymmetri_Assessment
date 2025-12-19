@@ -28,15 +28,15 @@ During the development, I implemented three distinct tools for the AI agent:
 ## Application Glimpses
 
 <table>
-  <tr colspan=2>
-    <td align="center">
+  <tr>
+    <td colspan="2" align="center">
         <b>Chat Interface</b><br/>
         <img src="./ScreenShots/s1.png" alt="Chat Interface" width="100%"/>
     </td>
   </tr>
   <tr>
     <td align="center">
-        <b>Log in / Sign in </b><br/>
+        <b>Log in / Sign in</b><br/>
         <img src="./ScreenShots/image.png" alt="Authentication" width="100%" />
     </td>
     <td align="center">
