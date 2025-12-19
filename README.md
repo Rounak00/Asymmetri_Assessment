@@ -28,7 +28,7 @@ During the development, I implemented three distinct tools for the AI agent:
 ## Application Glimpses
 
 <table>
-  <tr>
+  <tr colspan=2>
     <td align="center">
         <b>Chat Interface</b><br/>
         <img src="./ScreenShots/s1.png" alt="Chat Interface" width="100%"/>
