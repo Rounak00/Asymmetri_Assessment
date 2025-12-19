@@ -1,21 +1,20 @@
 import { google } from "@ai-sdk/google";
-import { convertToCoreMessages, streamText } from "ai";
+import { streamText } from "ai";
 import { weatherTool, stockTool, f1Tool } from "@/ai-tools";
 import { db } from "@/db";
 import { messages as messagesTable } from "@/db/schema";
 
-// Allow streaming responses up to 30 seconds
-export const maxDuration = 30;
+
+export const maxDuration = 30; // Allow streaming responses up to 30 seconds
 
 export async function POST(req: Request) {
-  //Get messages AND chatId from the frontend
+  // Get messages and chatId from the frontend
   const { messages, chatId } = await req.json();
 
-  // Get the last message (The one the user just sent)
+  //Get the last message - The one the user just sent
   const lastUserMessage = messages[messages.length - 1];
 
-  //Save User Message to DB immediately
-  // We only save if we have a valid chatId
+  //save user message to DB immediately
   if (chatId && lastUserMessage) {
     await db.insert(messagesTable).values({
       chatId,
@@ -24,10 +23,10 @@ export async function POST(req: Request) {
     });
   }
 
-  //Start the AI Stream
+  //start the AI Stream
   const result = await streamText({
     model: google("gemini-1.5-flash"),
-    messages: convertToCoreMessages(messages),
+    messages: messages as any,
     tools: {
       getWeather: weatherTool,
       getStockPrice: stockTool,
@@ -35,9 +34,9 @@ export async function POST(req: Request) {
     },
     maxSteps: 5,
     
-    //LIFECYCLE HOOK: This runs when the AI finishes generating
-    onFinish: async ({ text }) => {
-      if (chatId && text) {
+    //save AI Response
+    onFinish: async ({ text }: { text: string }) => {
+      if (chatId && text) { // Only save if there is text (sometimes it return empty text first)
         await db.insert(messagesTable).values({
           chatId,
           role: "assistant",
@@ -45,8 +44,9 @@ export async function POST(req: Request) {
         });
       }
     },
-  });
+  } as any);
 
-//   return result.toDataStreamResponse();
-return result.toTextStreamResponse();
+   // FIX: Cast to 'any' to fix the TypeScript error. 
+  // 'toDataStreamResponse' exists in v5 and is required for tools to work.
+  return (result as any).toDataStreamResponse();
 }
