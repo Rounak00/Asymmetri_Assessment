@@ -140,3 +140,45 @@ Follow these steps to run the project locally:
    ```bash
    git clone <repository-url>
    cd <project-folder>
+   ```
+### Steps
+2. **Install dependencies**
+```bash
+npm install
+# or
+yarn install
+# or
+pnpm install
+```
+
+### Steps
+3. **Setup the Environment variables as mentioned before**
+
+### Steps
+4. **Set up the database**
+```bash
+npx drizzle-kit push
+# or
+npx drizzle-kit migrate
+```
+
+### Steps
+5. **Run the development server**
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+```
+
+### Steps
+6. **Open the application** -> Navigate to http://localhost:3000 in your browser.
+
+### Steps
+7. **For build**
+```bash
+npm run build
+npm run start
+```
+
