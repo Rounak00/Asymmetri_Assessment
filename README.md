@@ -30,22 +30,18 @@ During the development, I implemented three distinct tools for the AI agent:
 <table>
   <tr>
     <td align="center">
-        <b>Login Screen</b><br/>
-        <img src="./ScreenShots/login.png" alt="Login Screen" width="100%" />
-    </td>
-    <td align="center">
         <b>Chat Interface</b><br/>
-        <img src="./ScreenShots/chat.png" alt="Chat Interface" width="100%"/>
+        <img src="./ScreenShots/s1.png" alt="Chat Interface" width="100%"/>
     </td>
   </tr>
   <tr>
     <td align="center">
-        <b>Weather/Stock Tool Result</b><br/>
-        <img src="./ScreenShots/upload_doc.png" alt="Tool Usage" width="100%" />
+        <b>Log in / Sign in </b><br/>
+        <img src="./ScreenShots/image.png" alt="Authentication" width="100%" />
     </td>
     <td align="center">
-        <b>Mobile View / Sidebar</b><br/>
-        <img src="./ScreenShots/admin.png" alt="Mobile View" width="100%" />
+        <b>Empty chat Interface</b><br/>
+        <img src="./ScreenShots/Screenshot 2025-12-19 202414.png" alt="Empty Chat Interface" width="100%" />
     </td>
   </tr>
 </table>
